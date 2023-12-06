@@ -1,18 +1,54 @@
-[gd_scene load_steps=5 format=3 uid="uid://cj45gqgstg3ff"]
+[gd_scene load_steps=8 format=3 uid="uid://cj45gqgstg3ff"]
 
 [ext_resource type="Script" path="res://scenes/player/player.gd" id="1_2f1nt"]
 [ext_resource type="Texture2D" uid="uid://jvgvqo8erlgo" path="res://graphics/player/player_pistol_equip.png" id="2_3x780"]
 [ext_resource type="PackedScene" uid="uid://3tt5gupkpacp" path="res://scenes/bullet/bullet.tscn" id="2_tem56"]
+[ext_resource type="Texture2D" uid="uid://dd8dm24k63or6" path="res://graphics/weapons/MuzzleFlash.png" id="4_uw4u2"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_pcwun"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xwcdi"]
+size = Vector2(39.5534, 33.6108)
+
+[sub_resource type="Animation" id="Animation_elta5"]
+resource_name = "muzzle_flash"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.75, 0.75), Vector2(0.8, 0.38)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gu1sr"]
+_data = {
+"muzzle_flash": SubResource("Animation_elta5")
+}
 
 [node name="player" type="CharacterBody2D"]
 collision_mask = 31
 script = ExtResource("1_2f1nt")
 bullet = ExtResource("2_tem56")
+speed = 300
 
 [node name="sprite" type="Sprite2D" parent="."]
-position = Vector2(9, 1)
+position = Vector2(6, 1)
 rotation = -1.5708
 scale = Vector2(0.704846, 0.646207)
 texture = ExtResource("2_3x780")
@@ -20,11 +56,30 @@ texture = ExtResource("2_3x780")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(6.0922, 0.999974)
 rotation = -1.5708
-scale = Vector2(1.87505, 2.0903)
-shape = SubResource("CircleShape2D_pcwun")
+scale = Vector2(1.54222, 1.36312)
+shape = SubResource("RectangleShape2D_xwcdi")
 
 [node name="EndOfGun" type="Marker2D" parent="."]
 position = Vector2(39, 0)
 
 [node name="GunDirection" type="Marker2D" parent="."]
 position = Vector2(40, 0)
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="MuzzleFlash" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(57, 0)
+rotation = 3.14159
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("4_uw4u2")
+region_enabled = true
+region_rect = Rect2(44, 302, 44, 26)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../MuzzleFlash")
+libraries = {
+"": SubResource("AnimationLibrary_gu1sr")
+}
